@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://requirejs.org/docs/release/2.3.2/comments/require.js"></script>
+<style type="text/css">
+    span  {
+        margin-right: 5px;
+    }
+</style>
+    <script type="text/javascript">
+        requirejs(['js/common.js'], function (common) {
+            requirejs([
+                'underscore',
+                'backbone',
+                'View/NestedView'
+            ], function (_, Backbone,  NestedView) {
+
+                var item1 = new Backbone.Model({
+                    nome: 'Fabio',
+                    cognome: 'Pellati'
+                });
+                var item2 = new Backbone.Model({
+                    nome: 'Damian',
+                    cognome: 'Gomez'
+                });
+                var item3 = new Backbone.Model({
+                    nome: 'Luca',
+                    cognome: 'Lodi'
+                });
+
+                var collection = new Backbone.Collection([item1, item2]);
+
+                var propertyView = NestedView.extend({
+                    tagName:'span'
+                });
+
+                var itemView = NestedView.extend({
+                    tagName:'li',
+                    subViews: [propertyView],
+                    itera:function(){
+                        var result=[
+                            this.subData.attributes['cognome'],
+                            this.subData.attributes['nome'],
+                        ];
+                        return result;
+                    }
+                });
+
+                var collectionView = new NestedView({
+                    tagName:'ul',
+                    subViews: [itemView],
+                    itera:function(){
+                        return this.collection.models;
+                    },
+                    collection: collection,
+                    el: '.widget'
+                });
+                collectionView.render();
+
+            });
+        });
+    </script>
+</head>
+<body>
+<div>primo widget</div>
+<div id="w1" class="widget"></div>
+<div>secondo widget</div>
+<ul id="w2" class="widget"></ul>
+</body>
+</html>
